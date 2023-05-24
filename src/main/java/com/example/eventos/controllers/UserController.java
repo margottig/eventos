@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.eventos.models.Estados;
-import com.example.eventos.models.Evento;
 import com.example.eventos.models.LoginUser;
 import com.example.eventos.models.User;
 import com.example.eventos.services.UserService;
@@ -69,22 +68,6 @@ public class UserController {
 		}
 	}
 	
-	@GetMapping("/events")
-	public String welcome(HttpSession sesion, Model viewModel, @ModelAttribute("event") Evento evento) {
-		Long userId = (Long) sesion.getAttribute("userID");
-		if(userId == null) {
-			return "redirect:/"; 
-		}
-		User usuario = userService.findUserById(userId);
-		viewModel.addAttribute("usuario", usuario);
-		viewModel.addAttribute("estados", Estados.estados);
-		return "/event/index.jsp";
-	}
 	
-	@GetMapping("/logout")
-	 public String logout(HttpSession session) {
-		 session.setAttribute("userID", null);
-		 return "redirect:/";
-	 }
 
 }

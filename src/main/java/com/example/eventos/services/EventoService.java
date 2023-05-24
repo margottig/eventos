@@ -1,5 +1,7 @@
 package com.example.eventos.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,20 @@ public class EventoService {
 	
 	public Evento crearEvento(Evento evento) {
 		return eventoRepo.save(evento);
+	}
+	
+	public List<Evento> todosLosEventosConEstado(String estado){
+		return eventoRepo.findByEstado(estado);
+		
+	}
+	
+	public List<Evento> todosLosEventosSinEstado(String estado){
+		return eventoRepo.findByEstadoIsNot(estado);
+		
+	}
+	
+	public Evento findById(Long id) {
+		return eventoRepo.findById(id).orElse(null);
 	}
 	
 
