@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.eventos.models.Estados;
+import com.example.eventos.models.Evento;
 import com.example.eventos.models.LoginUser;
 import com.example.eventos.models.User;
 import com.example.eventos.services.UserService;
@@ -36,6 +37,7 @@ public class UserController {
 			BindingResult resultado, Model viewModel) {
 		if(resultado.hasErrors()) {
 			viewModel.addAttribute("login", new LoginUser());
+			viewModel.addAttribute("estados", Estados.estados);
 			return "loginreg.jsp";
 		}
 		
@@ -54,29 +56,29 @@ public class UserController {
 			viewModel.addAttribute("user", new User());
 			return "loginreg.jsp";
 		}
-		
 		if(userService.authenticateUser(loginuser.getEmail(), 
 				loginuser.getPassword(), resultado)) {
 			User usuarioLog = userService.findByEmail(loginuser.getEmail());
 			sesion.setAttribute("userID",  usuarioLog.getId());
 //			System.out.println(sesion.getAttribute("userID") + "atributo ");
-			return "redirect:/dashboard";
-			
+			return "redirect:events";
 		}else {
 			viewModel.addAttribute("user", new User());
+			viewModel.addAttribute("estados", Estados.estados);
 			return "loginreg.jsp";
 		}
 	}
 	
-	@GetMapping("/dashboard")
-	public String welcome(HttpSession sesion, Model viewModel) {
+	@GetMapping("/events")
+	public String welcome(HttpSession sesion, Model viewModel, @ModelAttribute("event") Evento evento) {
 		Long userId = (Long) sesion.getAttribute("userID");
 		if(userId == null) {
 			return "redirect:/"; 
 		}
 		User usuario = userService.findUserById(userId);
 		viewModel.addAttribute("usuario", usuario);
-		return "dashboard.jsp";
+		viewModel.addAttribute("estados", Estados.estados);
+		return "/event/index.jsp";
 	}
 	
 	@GetMapping("/logout")
