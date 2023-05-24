@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import com.example.eventos.models.Estados;
 import com.example.eventos.models.Evento;
@@ -71,11 +73,48 @@ public class EventController {
 		String[] listaEstados = Arrays.stream(Estados.estados)
 		        .filter(estado -> !estado.contains(unEvento.getEstado()))
 		        .toArray(String[]::new);
-
 //		System.out.println(eventoService.todosLosEventosSinEstado(unEvento.getEstado()) + "que es esto");
+		viewModel.addAttribute("usuario", userService.findUserById(userId));
 		viewModel.addAttribute("evento", unEvento);
 		viewModel.addAttribute("estados", listaEstados);
 		return "/event/editar.jsp";
+	}
+	
+	@PutMapping("/{id}")
+	public String actualizarEvento(@Valid @ModelAttribute("event") Evento evento, BindingResult resultado,
+			@PathVariable("id") Long id,
+			HttpSession sesion,
+			Model viewModel) {
+		Long userId = (Long) sesion.getAttribute("userID");
+		if(userId == null) {
+			return "redirect:/"; 
+		}
+		
+		if(resultado.hasErrors()) {
+			Evento unEvento = eventoService.findById(id);
+			if(unEvento == null ) {
+				return "redirect:/events";
+			}
+			String[] listaEstados = Arrays.stream(Estados.estados)
+			        .filter(estado -> !estado.contains(unEvento.getEstado()))
+			        .toArray(String[]::new);
+			
+			viewModel.addAttribute("usuario", userService.findUserById(userId));
+			viewModel.addAttribute("evento", unEvento);
+			viewModel.addAttribute("estados", listaEstados);
+//			viewModel.addAttribute("estados", Estados.estados);
+			return "/event/editar.jsp";
+		}
+		System.out.println(" SI INGRESAMOS POR ACAS");
+		eventoService.actualiarEvento(evento);
+		return "redirect:/events";
+		
+	}
+	
+	@DeleteMapping("/events/{id}")
+	public String borrarEvento(@PathVariable("id") Long id) {
+		eventoService.borrarEvento(id);
+		return "redirect:/events";
 	}
 	
 	

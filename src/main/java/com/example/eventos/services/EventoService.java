@@ -31,5 +31,15 @@ public class EventoService {
 		return eventoRepo.findById(id).orElse(null);
 	}
 	
+	//ACTUALIZAR EVENTO
+	public Evento actualiarEvento(Evento evento) {
+		return eventoRepo.save(evento);
+	}
+	
+	//BORRAR EVENTO
+	public void borrarEvento(Long id) {
+		eventoRepo.deleteById(id);
+	}
+		
 
 }
