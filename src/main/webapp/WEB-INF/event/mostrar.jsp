@@ -12,7 +12,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>TITULO AQUI</title>
+<title>Mostrar Evento</title>
 <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/main.css">
 <!-- change to match your file/naming structure -->
@@ -22,19 +22,19 @@
 </head>
 <body>
 	<div class="container">
-		<h2>${ event.name }</h2>
+		<h2>${ event.nombreEvento }</h2>
 		<div class="event-details-side">
 			<h4>
-				<strong>Host:</strong> ${ event.planner.firstName }
+				<strong>Host:</strong> ${ event.organizador.nombre }
 			</h4>
 			<h4>
-				<strong>Date:</strong> ${ event.eventDate }
+				<strong>Date:</strong> ${ event.fechaEvento }
 			</h4>
 			<h4>
-				<strong>Location:</strong> ${ event.city }, ${ event.state }
+				<strong>Location:</strong> ${ event.ciudad }, ${ event.estado }
 			</h4>
 			<h4>
-				<strong>People attending:</strong> ${ event.attendees.size() }
+				<strong>People attending:</strong> ${ event.asistentes.size() }
 			</h4>
 			<table class="table table-hover">
 				<thead>
@@ -44,10 +44,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${ event.attendees }" var="user">
+					<c:forEach items="${ event.asistentes }" var="user">
 						<tr>
-							<td>${ user.firstName }${ user.lastName }</td>
-							<td>${ user.city },${ user.state }</td>
+							<td>${ user.nombre }${ user.apellido }</td>
+							<td>${ user.ubicacion },${ user.estado }</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -56,8 +56,8 @@
 		<div class="event-details-side">
 			<h3>Message Wall</h3>
 			<div class="messages">
-				<c:forEach items="${ event.messages }" var="message">
-					<p>${ message.author.firstName }says: ${ message.content }</p>
+				<c:forEach items="${ event.mensajes }" var="message">
+					<p>${ message.autor.nombre }says: ${ message.comentario }</p>
 				</c:forEach>
 			</div>
 			<form action="/events/${ event.id }/comment" method="post">

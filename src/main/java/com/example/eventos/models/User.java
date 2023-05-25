@@ -63,6 +63,11 @@ public class User {
 		@OneToMany(mappedBy="organizador", fetch=FetchType.LAZY)
 		private List<Evento> eventosOrganizados;
 		
+		//Relacion muchos a muchos hacia mensajes
+		@OneToMany(mappedBy = "autor", fetch = FetchType.LAZY)
+		private List<Mensaje> mensajes;
+		
+		//Relacion muchos a muchos de Usuarios y Eventos
 		@ManyToMany(fetch=FetchType.LAZY)
 	    @JoinTable(
 			name="users_events",

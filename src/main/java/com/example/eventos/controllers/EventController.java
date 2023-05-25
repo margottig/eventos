@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.eventos.models.Estados;
 import com.example.eventos.models.Evento;
+import com.example.eventos.models.Mensaje;
 import com.example.eventos.models.User;
 import com.example.eventos.services.EventoService;
+import com.example.eventos.services.MensajeService;
 import com.example.eventos.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +32,8 @@ public class EventController {
 	private UserService userService;
 	@Autowired
 	private EventoService eventoService;
+	@Autowired 
+	private MensajeService mensajeService;
 	
 	@GetMapping("/events")
 	public String welcome(HttpSession sesion, Model viewModel, @ModelAttribute("event") Evento evento) {
@@ -134,6 +139,42 @@ public class EventController {
 				
 		return "redirect:/events";
 	}
+	
+	@GetMapping("/events/{idEvento}")
+	public String mostrarEvento(Model viewModel, 
+			@PathVariable("idEvento") Long idEvento, 
+			HttpSession sesion) {
+		Long userId = (Long) sesion.getAttribute("userID");
+		if(userId == null) {
+			return "redirect:/"; 
+		}
+		viewModel.addAttribute("event", eventoService.findById(idEvento));
+//		viewModel.addAttribute("event", eventoService.findById(idEvento));
+		return "/event/mostrar.jsp";
+	}
+	
+	
+	
+	@PostMapping("/events/{idEvento}/{comentario}")
+	public String comentario(@PathVariable("idEvento") Long idEvento,
+			@PathVariable("comentario") String comentario,
+			HttpSession sesion, RedirectAttributes redirecAttr) {
+		
+		Long userId = (Long) sesion.getAttribute("userID");
+		if(userId == null) {
+			return "redirect:/"; 
+		}
+		if(comentario.equals("")) {
+			redirecAttr.addFlashAttribute("error", "Por favor escribe un comentario");
+			return "redirect:/events/"+idEvento;
+		}
+		Evento evento = eventoService.findById(idEvento);
+		User usuario = userService.findUserById(userId);
+		mensajeService.comentario(usuario, evento, comentario);
+		
+		return "redirect:/events/"+idEvento;
+	}
+	
 	
 	
 	

@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -43,25 +44,33 @@ public class Evento {
 	private Date createdAt;
 	private Date updatedAt;
 
-	 // Relacion n:1 a Usuarios
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="user_id")
+	// Relacion n:1 a Usuarios
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
 	private User organizador;
 
-//	private List<Mensajes> mensajes;
-	
-    @ManyToMany(fetch=FetchType.LAZY)
-    @JoinTable(
-		name="users_events",
-		joinColumns = @JoinColumn(name="event_id"),
-		inverseJoinColumns = @JoinColumn(name="user_id")
-	)
-    private List<User> asistentes;
+	//Relacion muchos a muchos hacia mensajes
+	@OneToMany(mappedBy = "evento", fetch = FetchType.LAZY)
+	private List<Mensaje> mensajes;
 
-	
+	//Relacion muchos a muchos de Usuarios y Eventos
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "users_events", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	private List<User> asistentes;
+
 	// CONSTRUCTOR
 	public Evento() {
 
+	}
+	
+	//GETTERS Y SETTERS
+
+	public List<Mensaje> getMensajes() {
+		return mensajes;
+	}
+
+	public void setMensajes(List<Mensaje> mensajes) {
+		this.mensajes = mensajes;
 	}
 
 	public List<User> getAsistentes() {
