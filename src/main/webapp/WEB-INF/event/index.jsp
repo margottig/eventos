@@ -52,17 +52,17 @@
 									<button>Borrar</button>
 								</form>
 							</c:when>
-<%-- 							<c:otherwise> --%>
-<%-- 								<c:choose> --%>
-<%-- 									<c:when test="${ evento.attendees.contains(user) }"> --%>
-<%-- 										<span>Unirse <a href="/events/${ event.id }/a/cancel">Cancelar</a></span> --%>
-<%-- 									</c:when> --%>
-<%-- 									<c:otherwise> --%>
-<%-- 										<a href="/events/${ event.id }/a/join">Join</a> --%>
-<%-- 									</c:otherwise> --%>
+							<c:otherwise>
+								<c:choose>
+									<c:when test="${ evento.asistentes.contains(usuario) }">
+										<a href="/event/${ evento.id }/${usuario.id }/cancel">Cancelar</a>
+									</c:when>
+									<c:otherwise>
+										<a href="/event/${ evento.id }/${usuario.id }/unirse">Unirse</a>
+									</c:otherwise>
 
-<%-- 								</c:choose> --%>
-<%-- 							</c:otherwise> --%>
+								</c:choose>
+							</c:otherwise>
 						</c:choose></td>
 				</tr>
 			</c:forEach>

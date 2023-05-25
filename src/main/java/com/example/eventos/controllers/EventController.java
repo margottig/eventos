@@ -117,8 +117,23 @@ public class EventController {
 		return "redirect:/events";
 	}
 	
-	
-	
+	@GetMapping("/event/{idEvento}/{idUsuario}/{opcion}")
+	public String adminEventos(@PathVariable("idEvento")Long idEvento, 
+			@PathVariable("opcion")String opcion, 
+			@PathVariable("idUsuario")Long idUsuario,
+			HttpSession sesion) {
+		Long userId = (Long) sesion.getAttribute("userID");
+		if(userId == null) {
+			return "redirect:/"; 
+		}
+		Evento unEvento = eventoService.findById(idEvento);
+		boolean unirse = (opcion.equals("unirse"));
+		User usuario = userService.findUserById(idUsuario);
+		
+		eventoService.adminEventos(unEvento, usuario, unirse);
+				
+		return "redirect:/events";
+	}
 	
 	
 	

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.eventos.models.Evento;
+import com.example.eventos.models.User;
 import com.example.eventos.repositories.EventoRepo;
 
 @Service
@@ -40,6 +41,19 @@ public class EventoService {
 	public void borrarEvento(Long id) {
 		eventoRepo.deleteById(id);
 	}
+	
+	//ADMINISTRAR EVENTO
+	public void adminEventos(Evento evento, 
+			User usuario, boolean unirse) {
+//		System.out.println(evento.getNombreEvento() + usuario.getNombre() + " aquiiiii ");
+		if(unirse) {
+			evento.getAsistentes().add(usuario);
+		}else {
+			evento.getAsistentes().remove(usuario);
+		}
+		eventoRepo.save(evento);
+	}
+	
 		
 
 }
