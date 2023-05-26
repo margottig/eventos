@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -50,12 +51,14 @@ public class Evento {
 	private User organizador;
 
 	//Relacion muchos a muchos hacia mensajes
-	@OneToMany(mappedBy = "evento", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "evento", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Mensaje> mensajes;
 
 	//Relacion muchos a muchos de Usuarios y Eventos
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "users_events", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@ManyToMany(fetch = FetchType.LAZY )
+	@JoinTable(name = "asistentes", 
+	joinColumns = @JoinColumn(name = "event_id"), 
+	inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<User> asistentes;
 
 	// CONSTRUCTOR

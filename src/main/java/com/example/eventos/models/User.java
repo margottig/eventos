@@ -3,6 +3,7 @@ package com.example.eventos.models;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -70,10 +71,9 @@ public class User {
 		//Relacion muchos a muchos de Usuarios y Eventos
 		@ManyToMany(fetch=FetchType.LAZY)
 	    @JoinTable(
-			name="users_events",
+			name="asistentes",
 			joinColumns = @JoinColumn(name="user_id"),
-			inverseJoinColumns = @JoinColumn(name="event_id")
-		)
+			inverseJoinColumns = @JoinColumn(name="event_id")		)
 	    private List<Evento> eventosAsistire;
 		
 

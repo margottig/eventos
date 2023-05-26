@@ -1,5 +1,6 @@
 package com.example.eventos.controllers;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.eventos.models.Estados;
 import com.example.eventos.models.Evento;
-import com.example.eventos.models.Mensaje;
 import com.example.eventos.models.User;
 import com.example.eventos.services.EventoService;
 import com.example.eventos.services.MensajeService;
@@ -35,6 +36,13 @@ public class EventController {
 	@Autowired 
 	private MensajeService mensajeService;
 	
+	// metodo interno para formatear fecha
+	public String fecha(Long idEvento) {
+		SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+		return dateformat.format(eventoService.findById(idEvento).getFechaEvento());
+	}
+	
+	
 	@GetMapping("/events")
 	public String welcome(HttpSession sesion, Model viewModel, @ModelAttribute("event") Evento evento) {
 		Long userId = (Long) sesion.getAttribute("userID");
@@ -44,6 +52,7 @@ public class EventController {
 		User usuarioLog = userService.findUserById(userId);
 		viewModel.addAttribute("estadoUsuario", eventoService.todosLosEventosConEstado(usuarioLog.getEstado()));
 		viewModel.addAttribute("usuario", usuarioLog);
+		viewModel.addAttribute("estadoNoUsuario", eventoService.todosLosEventosSinEstado(usuarioLog.getEstado()));
 		viewModel.addAttribute("estados", Estados.estados);
 		
 		return "/event/index.jsp";
@@ -82,6 +91,8 @@ public class EventController {
 		viewModel.addAttribute("usuario", userService.findUserById(userId));
 		viewModel.addAttribute("evento", unEvento);
 		viewModel.addAttribute("estados", listaEstados);
+		// opcion para formatera fecha
+		viewModel.addAttribute("fecha", this.fecha(unEvento.getId()));
 		return "/event/editar.jsp";
 	}
 	
@@ -118,10 +129,11 @@ public class EventController {
 	
 	@DeleteMapping("/events/{id}")
 	public String borrarEvento(@PathVariable("id") Long id) {
-		eventoService.borrarEvento(id);
+		eventoService.borrarEvento(id);	
 		return "redirect:/events";
 	}
 	
+	// Controlador para unirse o cancelar de un evento
 	@GetMapping("/event/{idEvento}/{idUsuario}/{opcion}")
 	public String adminEventos(@PathVariable("idEvento")Long idEvento, 
 			@PathVariable("opcion")String opcion, 
@@ -140,6 +152,7 @@ public class EventController {
 		return "redirect:/events";
 	}
 	
+	//MOSTRAR EL EVENTO
 	@GetMapping("/events/{idEvento}")
 	public String mostrarEvento(Model viewModel, 
 			@PathVariable("idEvento") Long idEvento, 
@@ -152,12 +165,10 @@ public class EventController {
 //		viewModel.addAttribute("event", eventoService.findById(idEvento));
 		return "/event/mostrar.jsp";
 	}
-	
-	
-	
-	@PostMapping("/events/{idEvento}/{comentario}")
+		
+	@PostMapping("/events/{idEvento}/comentario")
 	public String comentario(@PathVariable("idEvento") Long idEvento,
-			@PathVariable("comentario") String comentario,
+			@RequestParam("comment") String comentario ,
 			HttpSession sesion, RedirectAttributes redirecAttr) {
 		
 		Long userId = (Long) sesion.getAttribute("userID");
@@ -174,8 +185,6 @@ public class EventController {
 		
 		return "redirect:/events/"+idEvento;
 	}
-	
-	
 	
 	
 	

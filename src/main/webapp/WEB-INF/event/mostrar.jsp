@@ -21,14 +21,18 @@
 <!-- change to match your file/naming structure -->
 </head>
 <body>
-	<div class="container">
+	<div class="container row">
+	<a href="/events">Go back</a>
 		<h2>${ event.nombreEvento }</h2>
-		<div class="event-details-side">
+		<div class="event-details-side col-6">
 			<h4>
 				<strong>Host:</strong> ${ event.organizador.nombre }
 			</h4>
 			<h4>
-				<strong>Date:</strong> ${ event.fechaEvento }
+				<fmt:formatDate value="${event.fechaEvento}" pattern="MMMM dd, yyyy"
+					var="fechaEvento" />
+				<strong>Date:</strong>
+				<c:out value="${fechaEvento}"></c:out>
 			</h4>
 			<h4>
 				<strong>Location:</strong> ${ event.ciudad }, ${ event.estado }
@@ -53,14 +57,14 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="event-details-side">
+		<div class="event-details-side col-6">
 			<h3>Message Wall</h3>
 			<div class="messages">
 				<c:forEach items="${ event.mensajes }" var="message">
-					<p>${ message.autor.nombre }says: ${ message.comentario }</p>
+					<p>${ message.autor.nombre } says: ${ message.comentario }</p>
 				</c:forEach>
 			</div>
-			<form action="/events/${ event.id }/comment" method="post">
+			<form action="/events/${ event.id }/comentario" method="post">
 				<div class="form-group">
 					<label for="comment">Add Comment</label> <span>${ error }</span>
 					<textarea name="comment" id="comment" class="form-control"></textarea>

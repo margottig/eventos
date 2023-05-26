@@ -9,7 +9,7 @@
 <!-- form:form -->
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
-<html >
+<html>
 <head>
 <meta charset="ISO-8859-1">
 <title>Editar Evento</title>
@@ -23,6 +23,8 @@
 <body>
 
 	<h2>Editar Evento:</h2>
+	<a href="/events">Go back</a>
+	
 	<form:form action="/${evento.id}" method="post" modelAttribute="event">
 		<input type="hidden" name="_method" value="put">
 		<form:hidden value="${ usuario.id }" path="organizador" />
@@ -37,8 +39,13 @@
 			<form:label path="fechaEvento">Date</form:label>
 			<br>
 			<form:errors class="text-danger" path="fechaEvento"></form:errors>
-			<form:input class="form-control" type="date"
-				value="${evento.fechaEvento }" path="fechaEvento"></form:input>
+<!-- 			Formato fecha -->
+			<fmt:formatDate value="${evento.fechaEvento}" pattern="yyyy-MM-dd"
+				var="fechaEvento" />
+			<form:input class="form-control" type="date" value="${fechaEvento}"
+				path="fechaEvento"></form:input>
+
+
 		</div>
 		<div class="form-group">
 			<form:label path="ciudad">City</form:label>
@@ -56,16 +63,16 @@
 				<c:forEach items="${ estados }" var="estado">
 					<option value="${ estado }">${ estado }</option>
 				</c:forEach>
-<%-- 				<c:forEach items="${ estados }" var="estado"> --%>
-<%-- 					<c:choose> --%>
-<%-- 						<c:when test="${estado.equals(evento.estado)}"> --%>
-<%-- 							<option value="${ estado }">${ estado }</option> --%>
-<%-- 						</c:when> --%>
-<%-- 						<c:otherwise> --%>
-<%-- 							<option value="${ estado }">${ estado }</option> --%>
-<%-- 						</c:otherwise> --%>
-<%-- 					</c:choose> --%>
-<%-- 				</c:forEach> --%>
+				<%-- 				<c:forEach items="${ estados }" var="estado"> --%>
+				<%-- 					<c:choose> --%>
+				<%-- 						<c:when test="${estado.equals(evento.estado)}"> --%>
+				<%-- 							<option value="${ estado }">${ estado }</option> --%>
+				<%-- 						</c:when> --%>
+				<%-- 						<c:otherwise> --%>
+				<%-- 							<option value="${ estado }">${ estado }</option> --%>
+				<%-- 						</c:otherwise> --%>
+				<%-- 					</c:choose> --%>
+				<%-- 				</c:forEach> --%>
 			</form:select>
 		</div>
 		<button>Editar Evento</button>
